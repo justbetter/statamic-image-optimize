@@ -1,0 +1,58 @@
+{
+    "name": "justbetter/statamic-image-optimize",
+    "description": "Image optimization after upload",
+    "type": "package",
+    "license": "MIT",
+    "keywords": [
+        "justbetter",
+        "asset-uploads"
+    ],
+    "authors": [
+        {
+            "name": "Kevin Meijer",
+            "email": "kevin@justbetter.nl",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-fileinfo": "*",
+        "laravel/framework": "^9.0",
+        "league/glide": "^2.2"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.1",
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.5.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "JustBetter\\ImageOptimize\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JustBetter\\ImageOptimize\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "style": "pint --test"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "statamic": {
+            "name": "Image Optimize",
+            "description": "Image optimization after upload"
+        },
+        "laravel": {
+            "providers": [
+                "JustBetter\\ImageOptimize\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
