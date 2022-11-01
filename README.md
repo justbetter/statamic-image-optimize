@@ -18,7 +18,7 @@ composer require justbetter/image-optimize
 php artisan vendor:publish --provider="JustBetter\ImageOptimize\ServiceProvider"
 ```
 
-### Settigns
+### Settings
 
 It's possible to change to default resize width and height by overriding the config file and changing the parameters within.
 
