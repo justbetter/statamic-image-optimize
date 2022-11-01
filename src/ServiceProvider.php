@@ -11,6 +11,31 @@ class ServiceProvider extends AddonServiceProvider
 {
     public function boot()
     {
+        $this->bootConfig()
+            ->bootPublishables()
+            ->bootEvents();
+    }
+
+    public function bootEvents() : self
+    {
         Event::listen(AssetUploaded::class, AssetUploadedListener::class);
+
+        return $this;
+    }
+
+    public function bootConfig() : self
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/image-optimize.php', 'image-optimize');
+
+        return $this;
+    }
+
+    public function bootPublishables() : self
+    {
+        $this->publishes([
+            __DIR__.'/../config/image-optimize.php' => config_path('image-optimize.php'),
+        ], 'config');
+
+        return $this;
     }
 }

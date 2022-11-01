@@ -10,6 +10,19 @@ You can search for this addon in the `Tools > Addons` section of the Statamic co
 composer require justbetter/image-optimize
 ```
 
+## Config
+
+### Publish
+
+```
+php artisan vendor:publish --provider="JustBetter\ImageOptimize\ServiceProvider"
+```
+
+### Settigns
+
+It's possible to change to default resize width and height by overriding the config file and changing the parameters within.
+
+
 ## Features
 
 After an image is uploaded an event will trigger to optimize the image.
