@@ -9,11 +9,15 @@ use Statamic\Events\AssetUploaded;
 
 class ServiceProvider extends AddonServiceProvider
 {
-    public function boot()
+    public function boot() : void
     {
-        $this->bootConfig()
-            ->bootPublishables()
+        $this->bootPublishables()
             ->bootEvents();
+    }
+
+    public function register() : void
+    {
+        $this->bootConfig();
     }
 
     public function bootEvents() : self
