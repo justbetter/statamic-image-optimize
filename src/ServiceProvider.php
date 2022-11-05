@@ -3,6 +3,7 @@
 namespace JustBetter\ImageOptimize;
 
 use Illuminate\Support\Facades\Event;
+use JustBetter\ImageOptimize\Commands\ResizeImagesCommand;
 use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
 use Statamic\Events\AssetUploaded;
@@ -12,7 +13,8 @@ class ServiceProvider extends AddonServiceProvider
     public function boot() : void
     {
         $this->bootPublishables()
-            ->bootEvents();
+            ->bootEvents()
+            ->bootCommands();
     }
 
     public function register() : void
@@ -23,6 +25,15 @@ class ServiceProvider extends AddonServiceProvider
     public function bootEvents() : self
     {
         Event::listen(AssetUploaded::class, AssetUploadedListener::class);
+
+        return $this;
+    }
+
+    public function bootCommands() : self
+    {
+        $this->commands([
+            ResizeImagesCommand::class
+        ]);
 
         return $this;
     }

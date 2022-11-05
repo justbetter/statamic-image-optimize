@@ -17,6 +17,7 @@
     "require": {
         "php": "^8.0",
         "ext-fileinfo": "*",
+        "statamic/cms": "^3.3",
         "laravel/framework": "^9.0",
         "league/glide": "^2.2"
     },
@@ -40,7 +41,10 @@
         "style": "pint --test"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
     },
     "extra": {
         "statamic": {
