@@ -10,11 +10,18 @@ use Statamic\Events\AssetUploaded;
 
 class ServiceProvider extends AddonServiceProvider
 {
+    protected $actions = [
+        Actions\OptimizeAssets::class,
+    ];
+
     public function boot() : void
     {
+        parent::boot();
+
         $this->bootPublishables()
             ->bootEvents()
-            ->bootCommands();
+            ->bootCommands()
+            ->handleTranslations();
     }
 
     public function register() : void
@@ -52,5 +59,14 @@ class ServiceProvider extends AddonServiceProvider
         ], 'config');
 
         return $this;
+    }
+
+    protected function handleTranslations()
+    {
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'image-optimize');
+
+        $this->publishes([
+            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/statamic-image-optimize'),
+        ], 'image-optimize-translations');
     }
 }

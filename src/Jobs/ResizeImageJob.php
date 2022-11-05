@@ -17,11 +17,14 @@ class ResizeImageJob implements ShouldQueue, ShouldBeUnique
     use InteractsWithQueue;
     use Queueable;
 
+    public int $width;
+    public int $height;
+
     public function __construct(
         public Asset $asset,
-        public int $width = 1680,
-        public int $height = 1680,
     ) {
+        $this->width = config('image-optimize.default_resize_width');
+        $this->height = config('image-optimize.default_resize_height');
         $this->onConnection(config('image-optimize.default_queue_connection'));
         $this->onQueue(config('image-optimize.default_queue_name'));
     }

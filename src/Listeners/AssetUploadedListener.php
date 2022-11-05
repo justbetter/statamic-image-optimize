@@ -18,7 +18,7 @@ class AssetUploadedListener
         }
 
         if ($asset->isImage()) {
-            ResizeImageJob::dispatch($asset, config('image-optimize.default_resize_width'), config('image-optimize.default_resize_height'));
+            ResizeImageJob::dispatch($asset);
         }
     }
 }

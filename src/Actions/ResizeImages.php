@@ -19,7 +19,7 @@ class ResizeImages
     public function resizeImages(AssetCollection $assetCollection): void
     {
         $assetCollection->chunk($this->chunkSize)->each(function (AssetCollection $assets) {
-            $assets->each(fn (Asset $asset) => $asset->isImage() ? ResizeImageJob::dispatch($asset, config('image-optimize.default_resize_width'), config('image-optimize.default_resize_height')) : '');
+            $assets->each(fn (Asset $asset) => $asset->isImage() ? ResizeImageJob::dispatch($asset) : '');
         });
     }
 }
