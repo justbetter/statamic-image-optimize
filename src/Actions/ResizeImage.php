@@ -21,10 +21,9 @@ class ResizeImage
     {
         // Prevents exceptions occurring when resizing non-compatible filetypes like SVG.
         try {
-            (new Size())
-                ->runMaxResize(Image::make($this->asset->resolvedPath()), $this->width, $this->height)
-                ->save();
+            $image = (new Size())->runMaxResize(Image::make($this->asset->stream()), $this->width, $this->height);
 
+            $this->asset->disk()->filesystem()->put($this->asset->path(), $image->encode());
             $this->asset->save();
             $this->asset->meta();
         } catch (NotReadableException) {
