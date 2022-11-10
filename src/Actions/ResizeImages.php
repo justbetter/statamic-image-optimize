@@ -19,7 +19,12 @@ class ResizeImages
     public function resizeImages(AssetCollection $assetCollection): void
     {
         $assetCollection->chunk($this->chunkSize)->each(function (AssetCollection $assets) {
-            $assets->each(fn (Asset $asset) => $asset->isImage() ? ResizeImageJob::dispatch($asset) : '');
+            $assets->each(function (Asset $asset) {
+                if($asset->isImage()) {
+                    $asset->hydrate();
+                    ResizeImageJob::dispatch($asset);
+                }
+            });
         });
     }
 }
