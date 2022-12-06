@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Event;
 use JustBetter\ImageOptimize\Commands\ResizeImagesCommand;
 use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
+use JustBetter\ImageOptimize\Listeners\AssetReuploadedListener;
 use Statamic\Events\AssetUploaded;
+use Statamic\Events\AssetReuploaded;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -31,7 +33,7 @@ class ServiceProvider extends AddonServiceProvider
 
     public function bootEvents() : self
     {
-        Event::listen(AssetUploaded::class, AssetUploadedListener::class);
+        Event::listen([AssetUploaded::class, AssetReuploaded::class], AssetUploadedListener::class);
 
         return $this;
     }
