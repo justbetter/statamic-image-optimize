@@ -23,10 +23,12 @@ class ResizeImages
         $assetCollection->lazy()->each(function (Asset $asset) {
             if($asset->isImage()) {
                 $asset->hydrate();
-                ResizeImageJob::dispatch($asset);
 
                 if ($this->progressBar) {
+                    ResizeImageJob::dispatchSync($asset);
                     $this->progressBar->advance();
+                } else {
+                    ResizeImageJob::dispatch($asset);
                 }
             }
         });
