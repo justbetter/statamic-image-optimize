@@ -26,7 +26,7 @@ class ResizeImagesJob implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         $assets = Asset::all();
-        new ResizeImages($assets);
+        new ResizeImages($assets->whereNull('image-optimized'));
         ImagesResizedEvent::dispatch();
     }
 }

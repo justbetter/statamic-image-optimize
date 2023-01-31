@@ -4,11 +4,13 @@ namespace JustBetter\ImageOptimize;
 
 use Illuminate\Support\Facades\Event;
 use JustBetter\ImageOptimize\Commands\ResizeImagesCommand;
+use Statamic\Facades\CP\Nav;
 use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
 use JustBetter\ImageOptimize\Listeners\AssetReuploadedListener;
 use Statamic\Events\AssetUploaded;
 use Statamic\Events\AssetReuploaded;
+use Statamic\Statamic;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -16,13 +18,24 @@ class ServiceProvider extends AddonServiceProvider
         Actions\OptimizeAssets::class,
     ];
 
+    protected $routes = [
+        'cp' => __DIR__ . '/../routes/cp.php'
+    ];
+    
+    public $scripts = [
+        __DIR__ . '/../dist/js/statamic-image-optimize.js'
+    ];
+
     public function boot() : void
     {
         parent::boot();
 
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'statamic-image-optimize');
+
         $this->bootPublishables()
             ->bootEvents()
             ->bootCommands()
+            ->bootNav()
             ->handleTranslations();
     }
 
@@ -63,12 +76,26 @@ class ServiceProvider extends AddonServiceProvider
         return $this;
     }
 
-    protected function handleTranslations()
+    public function bootNav() : self
+    {
+        Nav::extend(function ($nav) {
+            $nav->create('Image Optimize')
+                ->section('Tools')
+                ->route('statamic-image-optimize.index')
+                ->icon('collection');
+        });
+
+        return $this;
+    }
+
+    protected function handleTranslations() : self
     {
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'image-optimize');
 
         $this->publishes([
             __DIR__ . '/../resources/lang' => resource_path('lang/vendor/statamic-image-optimize'),
         ], 'image-optimize-translations');
+
+        return $this;
     }
 }
