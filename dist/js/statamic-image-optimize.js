@@ -41,7 +41,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       var jobsDone = this.jobCount - this.currentJobCount;
       var jobsLeft = this.jobCount - jobsDone;
-      return jobsDone + ' of ' + this.jobCount + ' images have been resized.';
+      return jobsDone + ' of ' + this.jobCount + ' images have been optimized.';
     },
     checkAllDisabled: function checkAllDisabled() {
       return this.unoptimizedAssets > 0;
@@ -70,20 +70,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       return self.checkResizeImages();
                     case 2:
                       resizeCheckResponse = _context.sent;
-                      if (resizeCheckResponse.assetsToOptimize === undefined || resizeCheckResponse.assetTotal === undefined) {
-                        this.checkJobs = false;
-                        clearInterval(resizeInterval);
-                      }
-                      self.jobCount = resizeCheckResponse.assetTotal;
-                      self.currentJobCount = resizeCheckResponse.assetsToOptimize;
-                      if (!(resizeCheckResponse.assetsToOptimize === 0)) {
-                        _context.next = 10;
+                      if (!(resizeCheckResponse.assetsToOptimize === undefined || resizeCheckResponse.assetTotal === undefined)) {
+                        _context.next = 7;
                         break;
                       }
                       this.checkJobs = false;
                       clearInterval(resizeInterval);
                       return _context.abrupt("return");
-                    case 10:
+                    case 7:
+                      self.jobCount = resizeCheckResponse.assetTotal;
+                      self.currentJobCount = resizeCheckResponse.assetsToOptimize;
+                      if (!(resizeCheckResponse.assetsToOptimize === 0)) {
+                        _context.next = 13;
+                        break;
+                      }
+                      this.checkJobs = false;
+                      clearInterval(resizeInterval);
+                      return _context.abrupt("return");
+                    case 13:
                     case "end":
                       return _context.stop();
                   }

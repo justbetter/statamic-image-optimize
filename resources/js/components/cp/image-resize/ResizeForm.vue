@@ -55,7 +55,7 @@
           let jobsDone = this.jobCount - this.currentJobCount;
           let jobsLeft = this.jobCount - jobsDone;
 
-          return jobsDone + ' of ' + this.jobCount + ' images have been resized.';
+          return jobsDone + ' of ' + this.jobCount + ' images have been optimized.';
         },
 
         checkAllDisabled() {
@@ -76,6 +76,7 @@
             if (resizeCheckResponse.assetsToOptimize === undefined || resizeCheckResponse.assetTotal === undefined) {
               this.checkJobs = false;
               clearInterval(resizeInterval);
+              return;
             }
 
             self.jobCount = resizeCheckResponse.assetTotal;
