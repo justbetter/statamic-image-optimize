@@ -15,9 +15,7 @@ class ResizeImagesCommand extends Command
 
     public function handle(): int
     {
-        $verboseLevel = $this->getOutput()->getVerbosity();
-
-        if ($verboseLevel > 32) {
+        if ($this->getOutput()->isVerbose()) {
             $this->output->info("Starting the resize images job");
 
             $assets = Asset::all();
