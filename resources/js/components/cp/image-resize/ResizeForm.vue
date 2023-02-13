@@ -11,9 +11,7 @@
       <div v-show="!loadingMessage" class="mt-2">
           <ul class="card p-0 mb-2">
               <li class="flex items-center justify-between py-1 px-2 border-b group">
-                <p>
-                  <span v-text="unoptimizedAssets"></span> out of <span v-text="totalAssets"></span> assets need to be optimized
-                </p>
+                <span v-text="unoptimizedAssets"></span> out of <span v-text="totalAssets"></span> assets need to be optimized
               </li>
           </ul>
       </div>
@@ -100,7 +98,7 @@
                 return responseData;
               })
               .catch(function (error) {
-                console.log('error', error);
+                console.error(error);
               });
         },
 

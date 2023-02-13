@@ -9,11 +9,13 @@
   },
   "author": "JustBetter",
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "laravel-mix": "^6.0.43",
-    "postcss": "^8.2.4",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.8",
     "vue-template-compiler": "^2.6.12"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "laravel-mix": "^6.0.49",
+    "postcss": "^8.4.21"
   }
 }
