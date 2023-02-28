@@ -10,6 +10,6 @@ Route::namespace('\JustBetter\ImageOptimize\Http\Controllers\CP')
             ->name('resize-images');
         Route::get('/resize-all-images/', 'ImageResizeController@resizeAllImages')
             ->name('resize-all-images');
-        Route::get('/resize-images-count/', 'ImageResizeController@resizeImagesJobCount')
+        Route::get('/resize-images-count/{batchId?}', 'ImageResizeController@resizeImagesJobCount')
             ->name('resize-images-count');
     });

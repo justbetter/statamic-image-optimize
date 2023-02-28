@@ -19,6 +19,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      batchId: null,
       jobCount: this.unoptimizedAssets,
       currentJobCount: this.unoptimizedAssets,
       checkJobs: false,
@@ -114,10 +115,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return fetch(forceAll ? _this2.resizeAllUrl : _this2.resizeUrl).then(function (response) {
                 return response.json();
               }).then(function (responseData) {
+                self.batchId = responseData.batchId;
                 self.checkJobs = false;
                 return responseData;
               })["catch"](function (error) {
-                console.log('error', error);
+                console.error(error);
               });
             case 4:
               return _context3.abrupt("return", _context3.sent);
@@ -135,7 +137,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
-              return fetch(_this3.resizeCheckUrl).then(function (response) {
+              return fetch(_this3.resizeCheckUrl + _this3.batchId).then(function (response) {
                 return response.json();
               }).then(function (responseData) {
                 return responseData;
@@ -206,7 +208,7 @@ var render = function render() {
     staticClass: "card p-0 mb-2"
   }, [_c("li", {
     staticClass: "flex items-center justify-between py-1 px-2 border-b group"
-  }, [_c("p", [_c("span", {
+  }, [_c("span", {
     domProps: {
       textContent: _vm._s(_vm.unoptimizedAssets)
     }
@@ -214,7 +216,7 @@ var render = function render() {
     domProps: {
       textContent: _vm._s(_vm.totalAssets)
     }
-  }), _vm._v(" assets need to be optimized\n            ")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" assets need to be optimized\n          ")])])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",

@@ -3,6 +3,8 @@
 namespace JustBetter\ImageOptimize\Http\Controllers\CP;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
 use JustBetter\ImageOptimize\Jobs\ResizeImagesJob;
 use Statamic\Assets\AssetCollection;
 use Statamic\Assets\AssetRepository;
@@ -25,9 +27,9 @@ class ImageResizeController extends Controller
 
     public function resizeImages(): array
     {
-        ResizeImagesJob::dispatch();
+        $batch = (new ResizeImagesJob())->handle();
 
-        return ['imagesOptimized' => true];
+        return ['imagesOptimized' => true, 'batchId' => $batch->id];
     }
 
     public function resizeAllImages(): array
@@ -35,13 +37,19 @@ class ImageResizeController extends Controller
         $allAssets = Asset::all()->whereNotNull('image-optimized');
         $allAssets->lazy()->each(fn($asset) => $asset->data('image-optimized', null)->save());
 
-        ResizeImagesJob::dispatch();
+        $batch = (new ResizeImagesJob())->handle();
 
-        return ['imagesOptimized' => true];
+        return ['imagesOptimized' => true, 'batchId' => $batch->id];
     }
 
-    public function resizeImagesJobCount(): array
+    public function resizeImagesJobCount(string $batchId = null): array
     {
+        $batch = Bus::findBatch($batchId);
+
+        if ($batch) {
+            return ['assetsToOptimize' => $batch->pendingJobs ?? 0, 'assetTotal' => $batch->totalJobs ?? 0];
+        }
+
         $allAssets = Asset::all();
         $assets = $allAssets->whereNull('image-optimized');
 

@@ -10,12 +10,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Statamic\Assets\Asset;
 use JustBetter\ImageOptimize\Events\ImageResizedEvent;
 use JustBetter\ImageOptimize\Actions\ResizeImage;
+use Illuminate\Bus\Batchable;
 
 class ResizeImageJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
+    use Batchable;
 
     public int $width;
     public int $height;

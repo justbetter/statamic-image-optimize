@@ -27,6 +27,7 @@
     export default {
       data() {
         return {
+          batchId: null,
           jobCount: this.unoptimizedAssets,
           currentJobCount: this.unoptimizedAssets,
           checkJobs: false,
@@ -94,6 +95,7 @@
           return await fetch(forceAll ? this.resizeAllUrl : this.resizeUrl)
               .then((response) => response.json())
               .then(function (responseData) {
+                self.batchId = responseData.batchId;
                 self.checkJobs = false;
                 return responseData;
               })
@@ -103,7 +105,7 @@
         },
 
         async checkResizeImages() {
-          return await fetch(this.resizeCheckUrl)
+          return await fetch(this.resizeCheckUrl + this.batchId)
               .then((response) => response.json())
               .then(function (responseData) {
                 return responseData;

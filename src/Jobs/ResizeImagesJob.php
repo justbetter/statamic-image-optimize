@@ -2,6 +2,7 @@
 
 namespace JustBetter\ImageOptimize\Jobs;
 
+use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,15 +19,18 @@ class ResizeImagesJob implements ShouldQueue, ShouldBeUnique
     use Queueable;
 
     public function __construct(
+        public $forceAll = false
     ) {
         $this->onConnection(config('image-optimize.default_queue_connection'));
         $this->onQueue(config('image-optimize.default_queue_name'));
     }
 
-    public function handle(): void
+    public function handle(): Batch
     {
         $assets = Asset::all();
-        new ResizeImages($assets->whereNull('image-optimized'));
+        $batch = (new ResizeImages($this->forceAll ? $assets : $assets->whereNull('image-optimized')))->resizeImages();
         ImagesResizedEvent::dispatch();
+
+        return $batch;
     }
 }
