@@ -3,7 +3,7 @@
       <div class="flex items-center justify-between mb-3">
         <h1 v-text="title"></h1>
         <div>
-          <button class="btn-primary" :disabled="checkJobs || !checkAllDisabled" v-on:click="onTriggerResizeImages">Optimize remaining images</button>
+          <button class="btn-primary" :disabled="checkJobs || !checkAllDisabled" v-on:click="onTriggerResizeImages(false)">Optimize remaining images</button>
           <button class="btn-primary" :disabled="checkJobs" v-on:click="onTriggerResizeImages(true)">Optimize all images</button>
         </div>
       </div>
@@ -33,7 +33,7 @@
           checkJobs: false,
           jobStarted: false,
           resizeUrl: '/cp/statamic-image-optimize/resize-images/',
-          resizeAllUrl: '/cp/statamic-image-optimize/resize-all-images/',
+          resizeAllUrl: '/cp/statamic-image-optimize/resize-images/force-all',
           resizeCheckUrl: '/cp/statamic-image-optimize/resize-images-count/'
         }
       },

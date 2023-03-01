@@ -25,7 +25,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       checkJobs: false,
       jobStarted: false,
       resizeUrl: '/cp/statamic-image-optimize/resize-images/',
-      resizeAllUrl: '/cp/statamic-image-optimize/resize-all-images/',
+      resizeAllUrl: '/cp/statamic-image-optimize/resize-images/force-all',
       resizeCheckUrl: '/cp/statamic-image-optimize/resize-images-count/'
     };
   },
@@ -184,7 +184,9 @@ var render = function render() {
       disabled: _vm.checkJobs || !_vm.checkAllDisabled
     },
     on: {
-      click: _vm.onTriggerResizeImages
+      click: function click($event) {
+        return _vm.onTriggerResizeImages(false);
+      }
     }
   }, [_vm._v("Optimize remaining images")]), _vm._v(" "), _c("button", {
     staticClass: "btn-primary",

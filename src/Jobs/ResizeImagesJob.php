@@ -18,6 +18,10 @@ class ResizeImagesJob implements ShouldQueue, ShouldBeUnique
     use InteractsWithQueue;
     use Queueable;
 
+    public array $mimeTypes = [
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp'
+    ];
+
     public function __construct(
         public $forceAll = false
     ) {
@@ -27,7 +31,7 @@ class ResizeImagesJob implements ShouldQueue, ShouldBeUnique
 
     public function handle(): Batch
     {
-        $assets = Asset::all();
+        $assets = Asset::all()->whereIn('mime_type', $this->mimeTypes);
         $batch = (new ResizeImages($this->forceAll ? $assets : $assets->whereNull('image-optimized')))->resizeImages();
         ImagesResizedEvent::dispatch();
 

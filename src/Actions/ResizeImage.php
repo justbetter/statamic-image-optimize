@@ -25,7 +25,7 @@ class ResizeImage
 
             $this->asset->disk()->filesystem()->put($this->asset->path(), $image->encode());
 
-            $this->asset->data(['image-optimized' => true]);
+            $this->asset->data(['image-optimized' => '1']);
 
             $this->asset->save();
             $this->asset->meta();
