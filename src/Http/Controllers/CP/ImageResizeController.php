@@ -34,7 +34,7 @@ class ImageResizeController extends Controller
 
     public function resizeImagesJobCount(string $batchId = null): array
     {
-        $batch = Bus::findBatch($batchId);
+        $batch = $batchId ? Bus::findBatch($batchId) : null;
 
         if ($batch) {
             return ['assetsToOptimize' => $batch->pendingJobs ?? 0, 'assetTotal' => $batch->totalJobs ?? 0];
