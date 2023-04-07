@@ -31,9 +31,9 @@
                   <div class="overflow-hidden rounded-lg bg-white shadow">
                       <div class="flex flex-col justify-between items-center w-full h-full p-5">
                           <div class="truncate text-xl text-gray-500">
-                              Optimized assets
+                              Assets to optimize
                           </div>
-                          <div v-text="totalAssets - unoptimizedAssets" class="text-5xl font-medium text-gray-900"></div>
+                          <div v-text="unoptimizedAssets" class="text-5xl font-medium text-gray-900"></div>
                       </div>
                   </div>
               </div>
