@@ -22,6 +22,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       batchId: null,
       jobCount: this.unoptimizedAssets,
       currentJobCount: this.unoptimizedAssets,
+      jobsDone: 0,
       checkJobs: false,
       jobStarted: false,
       resizeUrl: '/cp/statamic-image-optimize/resize-images/',
@@ -41,9 +42,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (!this.jobStarted) {
         return '';
       }
-      var jobsDone = this.jobCount - this.currentJobCount;
-      var jobsLeft = this.jobCount - jobsDone;
-      return jobsDone + ' of ' + this.jobCount + ' images have been optimized.';
+      this.jobsDone = this.jobCount - this.currentJobCount;
+      return this.jobsDone + ' of ' + this.jobCount + ' images have been optimized.';
     },
     checkAllDisabled: function checkAllDisabled() {
       return this.unoptimizedAssets > 0;
@@ -218,19 +218,33 @@ var render = function render() {
       expression: "!loadingMessage && canOptimizeAssets"
     }],
     staticClass: "mt-2"
-  }, [_c("ul", {
-    staticClass: "card p-0 mb-2"
-  }, [_c("li", {
-    staticClass: "flex items-center justify-between py-1 px-2 border-b group"
-  }, [_c("span", {
-    domProps: {
-      textContent: _vm._s(_vm.unoptimizedAssets)
-    }
-  }), _vm._v(" out of "), _c("span", {
+  }, [_c("div", {
+    staticClass: "w-full mb-2"
+  }, [_c("div", {
+    staticClass: "mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2"
+  }, [_c("div", {
+    staticClass: "overflow-hidden rounded-lg bg-white shadow"
+  }, [_c("div", {
+    staticClass: "flex flex-col justify-between items-center w-full h-full p-5"
+  }, [_c("div", {
+    staticClass: "truncate text-xl text-gray-500"
+  }, [_vm._v("\n                            Total amount of assets\n                        ")]), _vm._v(" "), _c("div", {
+    staticClass: "text-5xl font-medium text-gray-900",
     domProps: {
       textContent: _vm._s(_vm.totalAssets)
     }
-  }), _vm._v(" assets need to be optimized\n          ")])])]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "overflow-hidden rounded-lg bg-white shadow"
+  }, [_c("div", {
+    staticClass: "flex flex-col justify-between items-center w-full h-full p-5"
+  }, [_c("div", {
+    staticClass: "truncate text-xl text-gray-500"
+  }, [_vm._v("\n                          Optimized assets\n                      ")]), _vm._v(" "), _c("div", {
+    staticClass: "text-5xl font-medium text-gray-900",
+    domProps: {
+      textContent: _vm._s(_vm.totalAssets - _vm.unoptimizedAssets)
+    }
+  })])])])])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -238,14 +252,20 @@ var render = function render() {
       expression: "loadingMessage && canOptimizeAssets"
     }],
     staticClass: "mt-2"
-  }, [_c("ul", {
-    staticClass: "card p-0 mb-2"
-  }, [_c("li", {
-    staticClass: "flex items-center justify-between py-1 px-2 border-b group",
+  }, [_c("div", {
+    staticClass: "w-full mb-2"
+  }, [_c("div", {
+    staticClass: "mt-2 grid grid-cols-1"
+  }, [_c("div", {
+    staticClass: "overflow-hidden rounded-lg bg-white shadow"
+  }, [_c("div", {
+    staticClass: "flex flex-col justify-between items-center w-full h-full p-5"
+  }, [_c("div", {
+    staticClass: "truncate text-xl text-gray-500",
     domProps: {
       textContent: _vm._s(_vm.loadingMessage)
     }
-  })])])]);
+  })])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,

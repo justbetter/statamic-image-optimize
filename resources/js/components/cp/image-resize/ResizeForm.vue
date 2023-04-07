@@ -17,17 +17,39 @@
       </div>
 
       <div v-show="!loadingMessage && canOptimizeAssets" class="mt-2">
-          <ul class="card p-0 mb-2">
-              <li class="flex items-center justify-between py-1 px-2 border-b group">
-                <span v-text="unoptimizedAssets"></span> out of <span v-text="totalAssets"></span> assets need to be optimized
-              </li>
-          </ul>
+          <div class="w-full mb-2">
+              <div class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div class="overflow-hidden rounded-lg bg-white shadow">
+                      <div class="flex flex-col justify-between items-center w-full h-full p-5">
+                            <div class="truncate text-xl text-gray-500">
+                                Total amount of assets
+                            </div>
+                            <div v-text="totalAssets" class="text-5xl font-medium text-gray-900"></div>
+                      </div>
+                  </div>
+
+                  <div class="overflow-hidden rounded-lg bg-white shadow">
+                      <div class="flex flex-col justify-between items-center w-full h-full p-5">
+                          <div class="truncate text-xl text-gray-500">
+                              Optimized assets
+                          </div>
+                          <div v-text="totalAssets - unoptimizedAssets" class="text-5xl font-medium text-gray-900"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
 
       <div v-show="loadingMessage && canOptimizeAssets" class="mt-2">
-          <ul class="card p-0 mb-2">
-              <li v-text="loadingMessage" class="flex items-center justify-between py-1 px-2 border-b group"></li>
-          </ul>
+          <div class="w-full mb-2">
+              <div class="mt-2 grid grid-cols-1">
+                  <div class="overflow-hidden rounded-lg bg-white shadow">
+                      <div class="flex flex-col justify-between items-center w-full h-full p-5">
+                          <div v-text="loadingMessage" class="truncate text-xl text-gray-500"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
     </div>
 </template>
@@ -38,6 +60,7 @@
           batchId: null,
           jobCount: this.unoptimizedAssets,
           currentJobCount: this.unoptimizedAssets,
+          jobsDone: 0,
           checkJobs: false,
           jobStarted: false,
           resizeUrl: '/cp/statamic-image-optimize/resize-images/',
@@ -60,10 +83,9 @@
             return '';
           }
 
-          let jobsDone = this.jobCount - this.currentJobCount;
-          let jobsLeft = this.jobCount - jobsDone;
+          this.jobsDone = this.jobCount - this.currentJobCount;
 
-          return jobsDone + ' of ' + this.jobCount + ' images have been optimized.';
+          return this.jobsDone + ' of ' + this.jobCount + ' images have been optimized.';
         },
 
         checkAllDisabled() {
