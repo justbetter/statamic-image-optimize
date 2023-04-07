@@ -228,7 +228,7 @@ var render = function render() {
     staticClass: "flex flex-col justify-between items-center w-full h-full p-5"
   }, [_c("div", {
     staticClass: "truncate text-xl text-gray-500"
-  }, [_vm._v("\n                            Total amount of assets\n                        ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                            Total amount of images\n                        ")]), _vm._v(" "), _c("div", {
     staticClass: "text-5xl font-medium text-gray-900",
     domProps: {
       textContent: _vm._s(_vm.totalAssets)
@@ -239,7 +239,7 @@ var render = function render() {
     staticClass: "flex flex-col justify-between items-center w-full h-full p-5"
   }, [_c("div", {
     staticClass: "truncate text-xl text-gray-500"
-  }, [_vm._v("\n                          Assets to optimize\n                      ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                          Images to optimize\n                      ")]), _vm._v(" "), _c("div", {
     staticClass: "text-5xl font-medium text-gray-900",
     domProps: {
       textContent: _vm._s(_vm.unoptimizedAssets)
