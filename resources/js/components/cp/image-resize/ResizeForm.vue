@@ -2,13 +2,21 @@
     <div>
       <div class="flex items-center justify-between mb-3">
         <h1 v-text="title"></h1>
-        <div>
+        <div v-if="canOptimizeAssets">
           <button class="btn-primary" :disabled="checkJobs || !checkAllDisabled" v-on:click="onTriggerResizeImages(false)">Optimize remaining images</button>
           <button class="btn-primary" :disabled="checkJobs" v-on:click="onTriggerResizeImages(true)">Optimize all images</button>
         </div>
       </div>
 
-      <div v-show="!loadingMessage" class="mt-2">
+      <div v-show="!canOptimizeAssets" class="mt-2">
+          <ul class="card p-0 mb-2">
+              <li class="flex items-center justify-between py-1 px-2 border-b group">
+                You need an active database connection in order to use the optimize addon.
+              </li>
+          </ul>
+      </div>
+
+      <div v-show="!loadingMessage && canOptimizeAssets" class="mt-2">
           <ul class="card p-0 mb-2">
               <li class="flex items-center justify-between py-1 px-2 border-b group">
                 <span v-text="unoptimizedAssets"></span> out of <span v-text="totalAssets"></span> assets need to be optimized
@@ -16,7 +24,7 @@
           </ul>
       </div>
 
-      <div v-show="loadingMessage" class="mt-2">
+      <div v-show="loadingMessage && canOptimizeAssets" class="mt-2">
           <ul class="card p-0 mb-2">
               <li v-text="loadingMessage" class="flex items-center justify-between py-1 px-2 border-b group"></li>
           </ul>
@@ -43,6 +51,7 @@
         buttonText: String,
         totalAssets: Number,
         unoptimizedAssets: Number,
+        canOptimize: Number,
       },
 
       computed: {
@@ -59,7 +68,11 @@
 
         checkAllDisabled() {
           return this.unoptimizedAssets > 0;
-        }
+        },
+
+        canOptimizeAssets() {
+          return this.canOptimize >= 1;
+        },
       },
 
       methods: {

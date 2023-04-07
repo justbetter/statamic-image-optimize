@@ -3,7 +3,6 @@
 namespace JustBetter\ImageOptimize\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,7 +11,7 @@ use JustBetter\ImageOptimize\Events\ImageResizedEvent;
 use JustBetter\ImageOptimize\Actions\ResizeImage;
 use Illuminate\Bus\Batchable;
 
-class ResizeImageJob implements ShouldQueue, ShouldBeUnique
+class ResizeImageJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

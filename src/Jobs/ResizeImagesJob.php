@@ -4,15 +4,13 @@ namespace JustBetter\ImageOptimize\Jobs;
 
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use JustBetter\ImageOptimize\Events\ImagesResizedEvent;
 use Statamic\Facades\Asset;
 use JustBetter\ImageOptimize\Actions\ResizeImages;
 
-class ResizeImagesJob implements ShouldQueue, ShouldBeUnique
+class ResizeImagesJob
 {
     use Dispatchable;
     use InteractsWithQueue;

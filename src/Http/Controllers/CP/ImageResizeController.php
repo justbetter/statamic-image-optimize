@@ -4,6 +4,7 @@ namespace JustBetter\ImageOptimize\Http\Controllers\CP;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use JustBetter\ImageOptimize\Jobs\ResizeImagesJob;
 use Statamic\Facades\Asset;
 use Statamic\Facades\AssetContainer;
@@ -18,11 +19,19 @@ class ImageResizeController extends Controller
     {
         $assets = Asset::all()->whereIn('mime_type', $this->mimeTypes);
         $unoptimizedAssets = $assets->whereNull('image-optimized');
+        $databaseConnected = true;
+
+        try {
+            DB::connection()->getPdo();
+        } catch (\Exception $e) {
+            $databaseConnected = false;
+        }
 
         return view('statamic-image-optimize::cp.image-resize.index', [
             'title' => 'JustBetter Image Optimize',
             'total_assets' => $assets->count(),
             'unoptimized_assets' => $unoptimizedAssets->count(),
+            'can_optimize' => $databaseConnected,
         ]);
     }
 

@@ -33,7 +33,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     title: String,
     buttonText: String,
     totalAssets: Number,
-    unoptimizedAssets: Number
+    unoptimizedAssets: Number,
+    canOptimize: Number
   },
   computed: {
     loadingMessage: function loadingMessage() {
@@ -46,6 +47,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     checkAllDisabled: function checkAllDisabled() {
       return this.unoptimizedAssets > 0;
+    },
+    canOptimizeAssets: function canOptimizeAssets() {
+      return this.canOptimize >= 1;
     }
   },
   methods: {
@@ -178,7 +182,7 @@ var render = function render() {
     domProps: {
       textContent: _vm._s(_vm.title)
     }
-  }), _vm._v(" "), _c("div", [_c("button", {
+  }), _vm._v(" "), _vm.canOptimizeAssets ? _c("div", [_c("button", {
     staticClass: "btn-primary",
     attrs: {
       disabled: _vm.checkJobs || !_vm.checkAllDisabled
@@ -198,12 +202,20 @@ var render = function render() {
         return _vm.onTriggerResizeImages(true);
       }
     }
-  }, [_vm._v("Optimize all images")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Optimize all images")])]) : _vm._e()]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: !_vm.loadingMessage,
-      expression: "!loadingMessage"
+      value: !_vm.canOptimizeAssets,
+      expression: "!canOptimizeAssets"
+    }],
+    staticClass: "mt-2"
+  }, [_vm._m(0)]), _vm._v(" "), _c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: !_vm.loadingMessage && _vm.canOptimizeAssets,
+      expression: "!loadingMessage && canOptimizeAssets"
     }],
     staticClass: "mt-2"
   }, [_c("ul", {
@@ -222,8 +234,8 @@ var render = function render() {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.loadingMessage,
-      expression: "loadingMessage"
+      value: _vm.loadingMessage && _vm.canOptimizeAssets,
+      expression: "loadingMessage && canOptimizeAssets"
     }],
     staticClass: "mt-2"
   }, [_c("ul", {
@@ -235,7 +247,15 @@ var render = function render() {
     }
   })])])]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("ul", {
+    staticClass: "card p-0 mb-2"
+  }, [_c("li", {
+    staticClass: "flex items-center justify-between py-1 px-2 border-b group"
+  }, [_vm._v("\n            You need an active database connection in order to use the optimize addon.\n          ")])]);
+}];
 render._withStripped = true;
 
 

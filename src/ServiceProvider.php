@@ -7,7 +7,6 @@ use JustBetter\ImageOptimize\Commands\ResizeImagesCommand;
 use Statamic\Facades\CP\Nav;
 use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
-use JustBetter\ImageOptimize\Listeners\AssetReuploadedListener;
 use Statamic\Events\AssetUploaded;
 use Statamic\Events\AssetReuploaded;
 use Statamic\Statamic;
@@ -21,7 +20,7 @@ class ServiceProvider extends AddonServiceProvider
     protected $routes = [
         'cp' => __DIR__ . '/../routes/cp.php'
     ];
-    
+
     public $scripts = [
         __DIR__ . '/../dist/js/statamic-image-optimize.js'
     ];
