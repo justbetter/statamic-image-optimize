@@ -8,7 +8,7 @@ return [
     'default_resize_height' => env('IMAGE_OPTIMIZE_HEIGHT', 1600),
 
     // Set the default queue name
-    'default_queue_name' => env('IMAGE_OPTIMIZE_QUEUE_NAME'),
+    'default_queue_name' => env('IMAGE_OPTIMIZE_QUEUE_NAME', 'default'),
 
     // Set the default queue connection
     'default_queue_connection' => env('IMAGE_OPTIMIZE_QUEUE_CONNECTION'),

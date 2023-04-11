@@ -24,6 +24,9 @@ class ResizeImage
             $image = (new Size())->runMaxResize(Image::make($this->asset->stream()), $this->width, $this->height);
 
             $this->asset->disk()->filesystem()->put($this->asset->path(), $image->encode());
+
+            $this->asset->data(['image-optimized' => '1']);
+
             $this->asset->save();
             $this->asset->meta();
         } catch (NotReadableException) {
