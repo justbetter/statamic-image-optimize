@@ -2,22 +2,18 @@
 
 namespace JustBetter\ImageOptimize\Http\Controllers\CP;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
-use JustBetter\ImageOptimize\Jobs\ResizeImagesJob;
+use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use Statamic\Facades\Asset;
-use Statamic\Facades\AssetContainer;
 
 class ImageResizeController extends Controller
 {
-    public array $mimeTypes = [
-        'image/jpeg', 'image/png', 'image/gif', 'image/webp'
-    ];
-
     public function index() : string
     {
-        $assets = Asset::all()->whereIn('mime_type', $this->mimeTypes);
+        $assets = Asset::all()->whereIn('mime_type', config('image-optimize.mime_types'));
         $unoptimizedAssets = $assets->whereNull('image-optimized');
         $databaseConnected = true;
 
@@ -35,23 +31,33 @@ class ImageResizeController extends Controller
         ]);
     }
 
-    public function resizeImages(string $forceAll = null): array
+    public function resizeImages(ResizesImages $resizesImages, string $forceAll = null): JsonResponse
     {
-        $batch = (new ResizeImagesJob($forceAll ? true : false))->handle();
-        return ['imagesOptimized' => true, 'batchId' => $batch->id];
+        $batch = $resizesImages->resize($forceAll !== null);
+
+        return response()->json([
+            'imagesOptimized' => true,
+            'batchId' => $batch->id
+        ]);
     }
 
-    public function resizeImagesJobCount(string $batchId = null): array
+    public function resizeImagesJobCount(string $batchId = null): JsonResponse
     {
         $batch = $batchId ? Bus::findBatch($batchId) : null;
 
         if ($batch) {
-            return ['assetsToOptimize' => $batch->pendingJobs ?? 0, 'assetTotal' => $batch->totalJobs ?? 0];
+            return response()->json([
+                'assetsToOptimize' => $batch->pendingJobs ?? 0,
+                'assetTotal' => $batch->totalJobs ?? 0
+            ]);
         }
 
         $allAssets = Asset::all();
         $assets = $allAssets->whereNull('image-optimized');
 
-        return ['assetsToOptimize' => $assets->count(), 'assetTotal' => $allAssets->count()];
+        return response()->json([
+            'assetsToOptimize' => $assets->count(),
+            'assetTotal' => $allAssets->count(),
+        ]);
     }
 }

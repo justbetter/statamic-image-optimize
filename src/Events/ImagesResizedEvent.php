@@ -2,9 +2,7 @@
 
 namespace JustBetter\ImageOptimize\Events;
 
-use Illuminate\Foundation\Events\Dispatchable;
-
-class ImagesResizedEvent
+class ImagesResizedEvent extends ImageEvent
 {
-    use Dispatchable;
+    //
 }

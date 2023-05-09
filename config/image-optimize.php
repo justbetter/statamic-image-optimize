@@ -11,5 +11,8 @@ return [
     'default_queue_name' => env('IMAGE_OPTIMIZE_QUEUE_NAME', 'default'),
 
     // Set the default queue connection
-    'default_queue_connection' => env('IMAGE_OPTIMIZE_QUEUE_CONNECTION'),
+    'default_queue_connection' => env('IMAGE_OPTIMIZE_QUEUE_CONNECTION', config('queue.default', 'sync')),
+
+    // The following mime types will be used to optimize images
+    'mime_types' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
 ];

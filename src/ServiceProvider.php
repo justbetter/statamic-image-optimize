@@ -3,13 +3,14 @@
 namespace JustBetter\ImageOptimize;
 
 use Illuminate\Support\Facades\Event;
+use JustBetter\ImageOptimize\Actions\ResizeImage;
+use JustBetter\ImageOptimize\Actions\ResizeImages;
 use JustBetter\ImageOptimize\Commands\ResizeImagesCommand;
 use Statamic\Facades\CP\Nav;
 use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
 use Statamic\Events\AssetUploaded;
 use Statamic\Events\AssetReuploaded;
-use Statamic\Statamic;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -21,11 +22,33 @@ class ServiceProvider extends AddonServiceProvider
         'cp' => __DIR__ . '/../routes/cp.php'
     ];
 
-    public $scripts = [
+    protected $scripts = [
         __DIR__ . '/../dist/js/statamic-image-optimize.js'
     ];
 
-    public function boot() : void
+    public function register(): void
+    {
+        $this->registerConfig()
+            ->registerActions();
+    }
+
+
+    protected function registerConfig(): static
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/image-optimize.php', 'image-optimize');
+
+        return $this;
+    }
+
+    protected function registerActions(): static
+    {
+        ResizeImage::bind();
+        ResizeImages::bind();
+
+        return $this;
+    }
+
+    public function boot(): void
     {
         parent::boot();
 
@@ -38,19 +61,16 @@ class ServiceProvider extends AddonServiceProvider
             ->handleTranslations();
     }
 
-    public function register() : void
-    {
-        $this->bootConfig();
-    }
 
-    public function bootEvents() : self
+
+    public function bootEvents(): static
     {
         Event::listen([AssetUploaded::class, AssetReuploaded::class], AssetUploadedListener::class);
 
         return $this;
     }
 
-    public function bootCommands() : self
+    protected function bootCommands(): static
     {
         $this->commands([
             ResizeImagesCommand::class
@@ -59,14 +79,7 @@ class ServiceProvider extends AddonServiceProvider
         return $this;
     }
 
-    public function bootConfig() : self
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/image-optimize.php', 'image-optimize');
-
-        return $this;
-    }
-
-    public function bootPublishables() : self
+    protected function bootPublishables(): static
     {
         $this->publishes([
             __DIR__.'/../config/image-optimize.php' => config_path('image-optimize.php'),
@@ -75,7 +88,7 @@ class ServiceProvider extends AddonServiceProvider
         return $this;
     }
 
-    public function bootNav() : self
+    protected function bootNav(): static
     {
         Nav::extend(function ($nav) {
             $nav->create('Image Optimize')
@@ -87,7 +100,7 @@ class ServiceProvider extends AddonServiceProvider
         return $this;
     }
 
-    protected function handleTranslations() : self
+    protected function handleTranslations(): static
     {
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'image-optimize');
 

@@ -2,35 +2,41 @@
 
 namespace JustBetter\ImageOptimize\Actions;
 
+use JustBetter\ImageOptimize\Contracts\ResizesImages;
+use JustBetter\ImageOptimize\Events\ImagesResizedEvent;
 use JustBetter\ImageOptimize\Jobs\ResizeImageJob;
 use Statamic\Assets\Asset;
-use Statamic\Assets\AssetCollection;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use Statamic\Assets\AssetCollection;
 
-class ResizeImages
+class ResizeImages implements ResizesImages
 {
-    public int $chunkSize = 200;
+    public function resize(bool $forceAll = false): Batch
+    {
+        /** @var AssetCollection $assets */
+        $assets = Asset::all();
 
-    public function __construct(
-        public AssetCollection $assetCollection
-    ) {
+        $assets
+            ->whereIn('mime_type', config('image-optimize.mime_types'))
+            ->when(!$forceAll, fn() => $assets->whereNull('image-optimized'));
+
+        $jobs = $assets
+            ->filter(fn(Asset $asset): bool => $asset->isImage())
+            ->map(fn (Asset $asset) => new ResizeImageJob($asset->hydrate()));
+
+        return Bus::batch($jobs)
+            ->name('image-optimize')
+            ->onConnection(config('image-optimize.default_queue_connection'))
+            ->onQueue(config('image-optimize.default_queue_name'))
+            ->then(function(): void {
+                ImagesResizedEvent::dispatch();
+            })
+            ->dispatch();
     }
 
-    public function resizeImages(): Batch
+    public static function bind(): void
     {
-        $batches = $this->assetCollection->map(function (Asset $asset) {
-            if(!$asset->isImage()) {
-                return null;
-            }
-
-            $asset->hydrate();
-            return new ResizeImageJob($asset);
-        })->filter();
-
-        return Bus::batch($batches)
-            ->name('image-optimize')
-            ->onQueue(config('image-optimize.default_queue_name'))
-            ->dispatch();
+        app()->singleton(ResizesImages::class,static::class);
     }
 }
