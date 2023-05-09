@@ -3,9 +3,8 @@
 namespace JustBetter\ImageOptimize\Commands;
 
 use Illuminate\Console\Command;
-use JustBetter\ImageOptimize\Actions\ResizeImages;
+use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use JustBetter\ImageOptimize\Jobs\ResizeImagesJob;
-use Statamic\Facades\Asset;
 use Illuminate\Support\Facades\DB;
 
 class ResizeImagesCommand extends Command
@@ -14,32 +13,26 @@ class ResizeImagesCommand extends Command
 
     protected $description = 'Optimize all images in the asset library';
 
-    public function handle(): int
+    public function handle(ResizesImages $resizesImages): int
     {
+        /** @var bool $forceAll */
         $forceAll = $this->option('forceAll');
-
-        $databaseConnected = true;
 
         try {
             DB::connection()->getPdo();
         } catch (\Exception $e) {
-            $databaseConnected = false;
-        }
-
-        if (!$databaseConnected) {
-            $this->output->error('You need an active database connection in order to use the optimize addon.');
+            $this->error('You need an active database connection in order to use the optimize addon.');
             return false;
         }
 
         if ($this->getOutput()->isVerbose()) {
-            $this->output->info("Starting the resize images job");
+            $this->line("Starting the resize images job");
 
             if ($forceAll) {
-                $this->output->text("Forcing to optimize all images");
+                $this->comment("Forcing to optimize all images");
             }
 
-            $assets = Asset::all();
-            $batch = (new ResizeImages($forceAll ? $assets : $assets->whereNull('image-optimized')))->resizeImages();
+            $batch = $resizesImages->resize($forceAll);
 
             $progress = $this->output->createProgressBar($batch->totalJobs);
             $progress->start();
@@ -52,9 +45,10 @@ class ResizeImagesCommand extends Command
             $progress->finish();
 
             $this->output->newLine(2);
-            $this->output->success("All images have been resized");
+            $this->info("All images have been resized");
         } else {
             ResizeImagesJob::dispatch($forceAll);
+            $this->info("Jobs dispatched");
         }
 
         return static::SUCCESS;

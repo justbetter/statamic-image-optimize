@@ -4,33 +4,37 @@ namespace JustBetter\ImageOptimize\Actions;
 
 use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\Facades\Image;
+use JustBetter\ImageOptimize\Contracts\ResizesImage;
+use JustBetter\ImageOptimize\Events\ImageResizedEvent;
 use League\Glide\Manipulators\Size;
 use Statamic\Assets\Asset;
 
-class ResizeImage
+class ResizeImage implements ResizesImage
 {
-    public function __construct(
-        public Asset $asset,
-        public int $width = 1680,
-        public int $height = 1680,
-    ) {
-        $this->resize();
-    }
-
-    public function resize(): void
+    public function resize(Asset $asset, ?int $width = null, ?int $height = null): void
     {
+        $width ??= (int) config('image-optimize.default_resize_width');
+        $height ??= (int) config('image-optimize.default_resize_height');
+
         // Prevents exceptions occurring when resizing non-compatible filetypes like SVG.
         try {
-            $image = (new Size())->runMaxResize(Image::make($this->asset->stream()), $this->width, $this->height);
+            $image = (new Size())->runMaxResize(Image::make($asset->stream()), $width, $height);
 
-            $this->asset->disk()->filesystem()->put($this->asset->path(), $image->encode());
+            $asset->disk()->filesystem()->put($asset->path(), $image->encode());
 
-            $this->asset->data(['image-optimized' => '1']);
+            $asset->data(['image-optimized' => '1']);
 
-            $this->asset->save();
-            $this->asset->meta();
+            $asset->save();
+            $asset->meta();
         } catch (NotReadableException) {
             return;
         }
+
+        ImageResizedEvent::dispatch();
+    }
+
+    public static function bind(): void
+    {
+        app()->singleton(ResizesImage::class,static::class);
     }
 }

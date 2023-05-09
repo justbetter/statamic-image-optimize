@@ -102,7 +102,7 @@
           let self = this;
           this.jobStarted = true;
           this.checkJobs = true;
-          this.resizeImages(forceAll);
+          await this.resizeImages(forceAll);
 
           let resizeInterval = setInterval(async function () {
             let resizeCheckResponse = await self.checkResizeImages();
@@ -119,7 +119,6 @@
             if (resizeCheckResponse.assetsToOptimize === 0) {
               this.checkJobs = false;
               clearInterval(resizeInterval);
-              return;
             }
           }, 1000);
         },
@@ -146,7 +145,7 @@
                 return responseData;
               })
               .catch(function (error) {
-                console.log('error', error);
+                console.error(error);
               });
         }
       }

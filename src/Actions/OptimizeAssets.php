@@ -2,12 +2,9 @@
 
 namespace JustBetter\ImageOptimize\Actions;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 use JustBetter\ImageOptimize\Jobs\ResizeImageJob;
 use Statamic\Actions\Action;
 use Statamic\Contracts\Assets\Asset;
-use Statamic\Facades\Asset as AssetAPI;
 
 class OptimizeAssets extends Action
 {
