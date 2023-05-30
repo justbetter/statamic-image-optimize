@@ -22,7 +22,7 @@ class ResizeImage implements ResizesImage
 
             $asset->disk()->filesystem()->put($asset->path(), $image->encode());
 
-            $asset->data(['image-optimized' => '1']);
+            $asset->merge(['image-optimized' => '1']);
 
             $asset->save();
             $asset->meta();
