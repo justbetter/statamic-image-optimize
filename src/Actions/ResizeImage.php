@@ -21,7 +21,7 @@ class ResizeImage implements ResizesImage
             $path = $this->event->asset->resolvedPath();
             $orientedImage = Image::make($path)->orientate();
 
-            $image = (new Size())->runMaxResize(Image::make($orientedImage->stream()), $width, $height);
+            $image = (new Size())->runMaxResize($orientedImage->stream(), $width, $height);
 
             $asset->disk()->filesystem()->put($orientedImage, $image->encode());
 
