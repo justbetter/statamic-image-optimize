@@ -18,12 +18,12 @@ class ResizeImage implements ResizesImage
 
         // Prevents exceptions occurring when resizing non-compatible filetypes like SVG.
         try {
-            $path = $this->event->asset->resolvedPath();
+            $path = $asset->resolvedPath();
             $orientedImage = Image::make($path)->orientate();
 
-            $image = (new Size())->runMaxResize($orientedImage->stream(), $width, $height);
+            $image = (new Size())->runMaxResize($orientedImage, $width, $height);
 
-            $asset->disk()->filesystem()->put($orientedImage, $image->encode());
+            $asset->disk()->filesystem()->put($path, $image->encode());
 
             $asset->merge(['image-optimized' => '1']);
 
