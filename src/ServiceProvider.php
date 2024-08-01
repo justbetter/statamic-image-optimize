@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Event;
 use JustBetter\ImageOptimize\Actions\ResizeImage;
 use JustBetter\ImageOptimize\Actions\ResizeImages;
 use JustBetter\ImageOptimize\Commands\ResizeImagesCommand;
+use Statamic\Assets\AssetCollection;
 use Statamic\Facades\CP\Nav;
 use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
@@ -29,7 +30,8 @@ class ServiceProvider extends AddonServiceProvider
     public function register(): void
     {
         $this->registerConfig()
-            ->registerActions();
+            ->registerActions()
+            ->registerMacros();
     }
 
 
@@ -44,6 +46,17 @@ class ServiceProvider extends AddonServiceProvider
     {
         ResizeImage::bind();
         ResizeImages::bind();
+
+        return $this;
+    }
+
+    protected function registerMacros(): static
+    {
+        AssetCollection::macro('getOptimizableAssets', function () {
+            return $this
+                ->whereNotIn('container', config('image-optimize.excluded_containers'))
+                ->whereIn('mime_type', config('image-optimize.mime_types'));
+        });
 
         return $this;
     }
