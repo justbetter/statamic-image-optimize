@@ -18,7 +18,7 @@ class AssetUploadedListener
             return;
         }
 
-        if ($asset->isImage()) {
+        if ($asset->isImage() && !in_array($asset->containerHandle(), config('image-optimize.excluded_containers'))) {
             ResizeImageJob::dispatch($asset);
         }
     }

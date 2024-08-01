@@ -15,4 +15,7 @@ return [
 
     // The following mime types will be used to optimize images
     'mime_types' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+
+    // You can exclude containers from optimization entirely here
+    'excluded_containers' => ['product_360_images'],
 ];
