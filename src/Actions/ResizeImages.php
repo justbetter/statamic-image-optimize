@@ -18,8 +18,7 @@ class ResizeImages implements ResizesImages
         $assets = Asset::all();
 
         $assets
-            ->whereNotIn('container', config('image-optimize.excluded_containers'))
-            ->whereIn('mime_type', config('image-optimize.mime_types'))
+            ->getOptimizableAssets()
             ->when(!$forceAll, fn() => $assets->whereNull('image-optimized'));
 
         $jobs = $assets

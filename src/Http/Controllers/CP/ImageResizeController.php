@@ -13,9 +13,7 @@ class ImageResizeController extends Controller
 {
     public function index() : string
     {
-        $assets = Asset::all()
-            ->whereNotIn('container', config('image-optimize.excluded_containers'))
-            ->whereIn('mime_type', config('image-optimize.mime_types'));
+        $assets = Asset::all()->getOptimizableAssets();
         $unoptimizedAssets = $assets->whereNull('image-optimized');
         $databaseConnected = true;
 
@@ -56,8 +54,7 @@ class ImageResizeController extends Controller
 
         $allAssets = Asset::all();
         $assets = $allAssets
-            ->whereNotIn('container', config('image-optimize.excluded_containers'))
-            ->whereIn('mime_type', config('image-optimize.mime_types'))
+            ->getOptimizableAssets()
             ->whereNull('image-optimized');
 
         return response()->json([
