@@ -1,3 +1,8 @@
+<a href="https://github.com/justbetter/statamic-image-optimize" title="JustBetter">
+    <img src="./art/banner.png" alt="Banner">
+</a>
+
+
 # Image Optimize
 
 > Image optimization after upload
