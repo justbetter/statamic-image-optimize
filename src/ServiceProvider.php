@@ -12,6 +12,7 @@ use Statamic\Providers\AddonServiceProvider;
 use JustBetter\ImageOptimize\Listeners\AssetUploadedListener;
 use Statamic\Events\AssetUploaded;
 use Statamic\Events\AssetReuploaded;
+use Statamic\CP\Navigation\Nav as Navigation;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -101,9 +102,12 @@ class ServiceProvider extends AddonServiceProvider
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function bootNav(): static
     {
-        Nav::extend(function ($nav) {
+        Nav::extend(function (Navigation $nav): void {
             $nav->create('Image Optimize')
                 ->section('Tools')
                 ->route('statamic-image-optimize.index')

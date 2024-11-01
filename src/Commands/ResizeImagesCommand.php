@@ -7,6 +7,7 @@ use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use JustBetter\ImageOptimize\Jobs\ResizeImagesJob;
 use Illuminate\Support\Facades\DB;
 
+/** @codeCoverageIgnore */
 class ResizeImagesCommand extends Command
 {
     protected $signature = 'justbetter:optimize:images {--forceAll}';
@@ -22,7 +23,7 @@ class ResizeImagesCommand extends Command
             DB::connection()->getPdo();
         } catch (\Exception $e) {
             $this->error('You need an active database connection in order to use the optimize addon.');
-            return false;
+            return static::FAILURE;
         }
 
         if ($this->getOutput()->isVerbose()) {

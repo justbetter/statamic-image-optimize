@@ -13,6 +13,13 @@ class ResizeImage implements ResizesImage
 {
     public function resize(Asset $asset, ?int $width = null, ?int $height = null): void
     {
+        if (! $asset->exists() ||
+            ! $asset->isImage() ||
+            in_array($asset->containerHandle(), config('image-optimize.excluded_containers'))
+        ) {
+            return;
+        }
+
         $width ??= (int) config('image-optimize.default_resize_width');
         $height ??= (int) config('image-optimize.default_resize_height');
 

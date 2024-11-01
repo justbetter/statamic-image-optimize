@@ -14,12 +14,6 @@ class AssetUploadedListener
         /** @var Asset $asset */
         $asset = $event->asset;
 
-        if (!$asset->exists()) {
-            return;
-        }
-
-        if ($asset->isImage() && !in_array($asset->containerHandle(), config('image-optimize.excluded_containers'))) {
-            ResizeImageJob::dispatch($asset);
-        }
+        ResizeImageJob::dispatch($asset);
     }
 }

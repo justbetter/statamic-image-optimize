@@ -8,12 +8,17 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use Statamic\Facades\Asset;
+use \Illuminate\Contracts\View\Factory;
+use \Illuminate\Contracts\View\View;
 
 class ImageResizeController extends Controller
 {
-    public function index() : string
+    /**
+     * @codeCoverageIgnore
+     */
+    public function index() : Factory|View|string
     {
-        $assets = Asset::all()->getOptimizableAssets();
+        $assets = Asset::all()->getOptimizableAssets(); // @phpstan-ignore-line
         $unoptimizedAssets = $assets->whereNull('image-optimized');
         $databaseConnected = true;
 
@@ -47,14 +52,13 @@ class ImageResizeController extends Controller
 
         if ($batch) {
             return response()->json([
-                'assetsToOptimize' => $batch->pendingJobs ?? 0,
-                'assetTotal' => $batch->totalJobs ?? 0
+                'assetsToOptimize' => $batch->pendingJobs,
+                'assetTotal' => $batch->totalJobs
             ]);
         }
 
         $allAssets = Asset::all();
-        $assets = $allAssets
-            ->getOptimizableAssets()
+        $assets = $allAssets->getOptimizableAssets() // @phpstan-ignore-line
             ->whereNull('image-optimized');
 
         return response()->json([
