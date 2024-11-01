@@ -3,14 +3,14 @@
 namespace JustBetter\ImageOptimize\Tests\Actions;
 
 use Closure;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Testing\Fakes\PendingBatchFake;
 use JustBetter\ImageOptimize\Actions\ResizeImages;
 use JustBetter\ImageOptimize\Events\ImagesResizedEvent;
 use JustBetter\ImageOptimize\Tests\TestCase;
 use Orchestra\Testbench\Attributes\WithMigration;
 use PHPUnit\Framework\Attributes\Test;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
 
 class ResizeImagesTest extends TestCase
 {
@@ -23,7 +23,7 @@ class ResizeImagesTest extends TestCase
 
         /** @var ResizeImages $action */
         $action = app(ResizeImages::class);
-                $action->resize();
+        $action->resize();
 
         Bus::assertBatched(fn (PendingBatchFake $batch): bool => $batch->jobs->count() === 1);
     }

@@ -15,8 +15,8 @@ use Statamic\Testing\Concerns\PreventsSavingStacheItemsToDisk;
 abstract class TestCase extends AddonTestCase
 {
     use InteractsWithViews;
-    use PreventsSavingStacheItemsToDisk;
     use LazilyRefreshDatabase;
+    use PreventsSavingStacheItemsToDisk;
 
     protected string $addonServiceProvider = ServiceProvider::class;
 

@@ -2,11 +2,8 @@
 
 namespace JustBetter\ImageOptimize\Tests\Http\Controllers;
 
-use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Testing\Fakes\BatchFake;
-use Intervention\Image\Exception\NotReadableException;
-use Intervention\Image\Facades\Image;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use JustBetter\ImageOptimize\Tests\TestCase;
 use Mockery\MockInterface;
@@ -17,7 +14,7 @@ class ImageResizeControllerTest extends TestCase
     #[Test]
     public function it_can_resize_images(): void
     {
-        $fakeBatch = new BatchFake('::batch-id::',  '::name::', 0, 0, 0, [], [], now()->toImmutable());
+        $fakeBatch = new BatchFake('::batch-id::', '::name::', 0, 0, 0, [], [], now()->toImmutable());
 
         $this->mock(ResizesImages::class, function (MockInterface $mock) use ($fakeBatch): void {
             $mock
@@ -58,7 +55,7 @@ class ImageResizeControllerTest extends TestCase
         Bus::fake();
 
         $this->createAsset();
-        $fakeBatch = new BatchFake('::batch-id::',  '::name::', 1, 0, 0, [], [], now()->toImmutable());
+        $fakeBatch = new BatchFake('::batch-id::', '::name::', 1, 0, 0, [], [], now()->toImmutable());
 
         Bus::spy()
             ->shouldReceive('findBatch')

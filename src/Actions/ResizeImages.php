@@ -2,14 +2,14 @@
 
 namespace JustBetter\ImageOptimize\Actions;
 
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use JustBetter\ImageOptimize\Events\ImagesResizedEvent;
 use JustBetter\ImageOptimize\Jobs\ResizeImageJob;
 use Statamic\Assets\Asset;
-use Statamic\Facades\Asset as AssetFacade;
-use Illuminate\Bus\Batch;
-use Illuminate\Support\Facades\Bus;
 use Statamic\Assets\AssetCollection;
+use Statamic\Facades\Asset as AssetFacade;
 
 class ResizeImages implements ResizesImages
 {
@@ -29,7 +29,7 @@ class ResizeImages implements ResizesImages
             ->name('image-optimize')
             ->onConnection(config('image-optimize.default_queue_connection'))
             ->onQueue(config('image-optimize.default_queue_name'))
-            ->then(function(): void {
+            ->then(function (): void {
                 ImagesResizedEvent::dispatch();
             })
             ->dispatch();
@@ -37,6 +37,6 @@ class ResizeImages implements ResizesImages
 
     public static function bind(): void
     {
-        app()->singleton(ResizesImages::class,static::class);
+        app()->singleton(ResizesImages::class, static::class);
     }
 }

@@ -2,21 +2,21 @@
 
 namespace JustBetter\ImageOptimize\Http\Controllers\CP;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use Statamic\Facades\Asset;
-use \Illuminate\Contracts\View\Factory;
-use \Illuminate\Contracts\View\View;
 
 class ImageResizeController extends Controller
 {
     /**
      * @codeCoverageIgnore
      */
-    public function index() : Factory|View|string
+    public function index(): Factory|View|string
     {
         $assets = Asset::all()->getOptimizableAssets(); // @phpstan-ignore-line
         $unoptimizedAssets = $assets->whereNull('image-optimized');
@@ -36,24 +36,24 @@ class ImageResizeController extends Controller
         ]);
     }
 
-    public function resizeImages(ResizesImages $resizesImages, string $forceAll = null): JsonResponse
+    public function resizeImages(ResizesImages $resizesImages, ?string $forceAll = null): JsonResponse
     {
         $batch = $resizesImages->resize($forceAll !== null);
 
         return response()->json([
             'imagesOptimized' => true,
-            'batchId' => $batch->id
+            'batchId' => $batch->id,
         ]);
     }
 
-    public function resizeImagesJobCount(string $batchId = null): JsonResponse
+    public function resizeImagesJobCount(?string $batchId = null): JsonResponse
     {
         $batch = $batchId ? Bus::findBatch($batchId) : null;
 
         if ($batch) {
             return response()->json([
                 'assetsToOptimize' => $batch->pendingJobs,
-                'assetTotal' => $batch->totalJobs
+                'assetTotal' => $batch->totalJobs,
             ]);
         }
 

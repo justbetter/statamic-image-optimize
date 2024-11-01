@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
 
-class ResizeImagesJob implements ShouldQueue, ShouldBeUnique
+class ResizeImagesJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
