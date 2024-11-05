@@ -2,10 +2,10 @@
 
 namespace JustBetter\ImageOptimize\Listeners;
 
-use Statamic\Assets\Asset;
-use Statamic\Events\AssetUploaded;
-use Statamic\Events\AssetReuploaded;
 use JustBetter\ImageOptimize\Jobs\ResizeImageJob;
+use Statamic\Assets\Asset;
+use Statamic\Events\AssetReuploaded;
+use Statamic\Events\AssetUploaded;
 
 class AssetUploadedListener
 {
@@ -14,12 +14,6 @@ class AssetUploadedListener
         /** @var Asset $asset */
         $asset = $event->asset;
 
-        if (!$asset->exists()) {
-            return;
-        }
-
-        if ($asset->isImage() && !in_array($asset->containerHandle(), config('image-optimize.excluded_containers'))) {
-            ResizeImageJob::dispatch($asset);
-        }
+        ResizeImageJob::dispatch($asset);
     }
 }

@@ -13,6 +13,13 @@ class ResizeImage implements ResizesImage
 {
     public function resize(Asset $asset, ?int $width = null, ?int $height = null): void
     {
+        if (! $asset->exists() ||
+            ! $asset->isImage() ||
+            in_array($asset->containerHandle(), config('image-optimize.excluded_containers'))
+        ) {
+            return;
+        }
+
         $width ??= (int) config('image-optimize.default_resize_width');
         $height ??= (int) config('image-optimize.default_resize_height');
 
@@ -20,7 +27,7 @@ class ResizeImage implements ResizesImage
         try {
             $orientedImage = Image::make($asset->resolvedPath())->orientate();
 
-            $image = (new Size())->runMaxResize($orientedImage, $width, $height);
+            $image = (new Size)->runMaxResize($orientedImage, $width, $height);
 
             $asset->disk()->filesystem()->put($asset->path(), $image->encode());
 
@@ -37,6 +44,6 @@ class ResizeImage implements ResizesImage
 
     public static function bind(): void
     {
-        app()->singleton(ResizesImage::class,static::class);
+        app()->singleton(ResizesImage::class, static::class);
     }
 }

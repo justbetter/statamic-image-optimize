@@ -2,6 +2,7 @@
 
 namespace JustBetter\ImageOptimize\Jobs;
 
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,14 +10,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use JustBetter\ImageOptimize\Contracts\ResizesImage;
 use Statamic\Assets\Asset;
-use Illuminate\Bus\Batchable;
 
-class ResizeImageJob implements ShouldQueue, ShouldBeUnique
+class ResizeImageJob implements ShouldBeUnique, ShouldQueue
 {
+    use Batchable;
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
-    use Batchable;
 
     public function __construct(
         public Asset $asset,

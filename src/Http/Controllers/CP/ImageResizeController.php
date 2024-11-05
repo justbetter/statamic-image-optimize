@@ -2,6 +2,8 @@
 
 namespace JustBetter\ImageOptimize\Http\Controllers\CP;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Bus;
@@ -11,9 +13,12 @@ use Statamic\Facades\Asset;
 
 class ImageResizeController extends Controller
 {
-    public function index() : string
+    /**
+     * @codeCoverageIgnore
+     */
+    public function index(): Factory|View|string
     {
-        $assets = Asset::all()->getOptimizableAssets();
+        $assets = Asset::all()->getOptimizableAssets(); // @phpstan-ignore-line
         $unoptimizedAssets = $assets->whereNull('image-optimized');
         $databaseConnected = true;
 
@@ -31,30 +36,29 @@ class ImageResizeController extends Controller
         ]);
     }
 
-    public function resizeImages(ResizesImages $resizesImages, string $forceAll = null): JsonResponse
+    public function resizeImages(ResizesImages $resizesImages, ?string $forceAll = null): JsonResponse
     {
         $batch = $resizesImages->resize($forceAll !== null);
 
         return response()->json([
             'imagesOptimized' => true,
-            'batchId' => $batch->id
+            'batchId' => $batch->id,
         ]);
     }
 
-    public function resizeImagesJobCount(string $batchId = null): JsonResponse
+    public function resizeImagesJobCount(?string $batchId = null): JsonResponse
     {
         $batch = $batchId ? Bus::findBatch($batchId) : null;
 
         if ($batch) {
             return response()->json([
-                'assetsToOptimize' => $batch->pendingJobs ?? 0,
-                'assetTotal' => $batch->totalJobs ?? 0
+                'assetsToOptimize' => $batch->pendingJobs,
+                'assetTotal' => $batch->totalJobs,
             ]);
         }
 
         $allAssets = Asset::all();
-        $assets = $allAssets
-            ->getOptimizableAssets()
+        $assets = $allAssets->getOptimizableAssets() // @phpstan-ignore-line
             ->whereNull('image-optimized');
 
         return response()->json([
