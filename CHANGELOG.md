@@ -1,6 +1,11 @@
 # Changelog 
 
-[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/3.2.0...main)
+[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/4.0.0...main)
+## [4.0.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/4.0.0) - 2025-05-20
+
+### Added
+ - Added Laravel 12 support (#33)
+
 ## [3.2.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/3.2.0) - 2024-11-05
 
 ### Added
