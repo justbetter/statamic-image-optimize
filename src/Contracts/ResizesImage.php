@@ -6,5 +6,5 @@ use Statamic\Assets\Asset;
 
 interface ResizesImage
 {
-    public function resize(Asset $asset, ?int $width = null, ?int $height = null): void;
+    public function resize(Asset $asset): void;
 }

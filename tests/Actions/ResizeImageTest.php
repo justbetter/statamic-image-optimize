@@ -4,6 +4,7 @@ namespace JustBetter\ImageOptimize\Tests\Actions;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 use JustBetter\ImageOptimize\Actions\ResizeImage;
 use JustBetter\ImageOptimize\Events\ImageResizedEvent;
 use JustBetter\ImageOptimize\Tests\TestCase;
@@ -13,19 +14,65 @@ use Statamic\Assets\Asset;
 class ResizeImageTest extends TestCase
 {
     #[Test]
-    public function it_can_resize_image(): void
+    public function it_resizes_within_max_dimensions_without_changing_aspect_ratio(): void
     {
         Event::fake();
 
-        $asset = $this->createAsset();
+        config()->set('image-optimize.max_resize_width', 2560);
+        config()->set('image-optimize.max_resize_height', 2560);
+
+        $manager = ImageManager::gd();
+        $contents = $manager->create(6000, 4000)->encodeByExtension('png')->toString();
+
+        /** @var Asset $asset */
+        $asset = $this->createAsset('landscape.png');
+        $asset->disk()->filesystem()->put($asset->path(), $contents);
+        $asset->meta();
 
         /** @var ResizeImage $action */
         $action = app(ResizeImage::class);
-        $action->resize($asset, 100, 100);
+        $action->resize($asset);
 
-        $this->assertEquals(100, $asset->meta('width'));
-        $this->assertEquals(63, $asset->meta('height'));
-        $this->assertEquals(1, $asset->meta('data.image-optimized'));
+        $resized = $manager->read($asset->resolvedPath());
+
+        $this->assertSame(2560, $resized->width());
+        $this->assertSame(1707, $resized->height());
+
+        $this->assertSame(2560, $asset->meta('width'));
+        $this->assertSame(1707, $asset->meta('height'));
+        $this->assertSame(1, (int) $asset->meta('data.image-optimized'));
+
+        Event::assertDispatched(ImageResizedEvent::class);
+    }
+
+    #[Test]
+    public function it_resizes_portrait_images_within_max_dimensions_without_changing_aspect_ratio(): void
+    {
+        Event::fake();
+
+        config()->set('image-optimize.max_resize_width', 2560);
+        config()->set('image-optimize.max_resize_height', 2560);
+
+        $manager = ImageManager::gd();
+        $contents = $manager->create(4000, 6000)->encodeByExtension('png')->toString();
+
+        /** @var Asset $asset */
+        $asset = $this->createAsset('portrait.png');
+        $asset->disk()->filesystem()->put($asset->path(), $contents);
+        $asset->meta();
+
+        /** @var ResizeImage $action */
+        $action = app(ResizeImage::class);
+        $action->resize($asset);
+
+        $resized = $manager->read($asset->resolvedPath());
+
+        $this->assertSame(1707, $resized->width());
+        $this->assertSame(2560, $resized->height());
+
+        $this->assertSame(1707, $asset->meta('width'));
+        $this->assertSame(2560, $asset->meta('height'));
+        $this->assertSame(1, (int) $asset->meta('data.image-optimized'));
 
         Event::assertDispatched(ImageResizedEvent::class);
     }

@@ -21,6 +21,6 @@ class ResizeImageJobTest extends TestCase
                 ->once();
         });
 
-        ResizeImageJob::dispatch($asset, 100, 100);
+        ResizeImageJob::dispatch($asset);
     }
 }
