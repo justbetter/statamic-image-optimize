@@ -16,10 +16,11 @@ class ResizeImages implements ResizesImages
     public function resize(bool $forceAll = false): Batch
     {
         /** @var AssetCollection $assets */
-        $assets = AssetFacade::all();
+        $assets = AssetFacade::all()->getOptimizableAssets(); // @phpstan-ignore-line
 
-        $assets->getOptimizableAssets() // @phpstan-ignore-line
-            ->when(! $forceAll, fn () => $assets->whereNull('image-optimized'));
+        if (! $forceAll) {
+            $assets = $assets->whereNull('image-optimized');
+        }
 
         $jobs = $assets
             ->filter(fn (Asset $asset): bool => $asset->isImage())

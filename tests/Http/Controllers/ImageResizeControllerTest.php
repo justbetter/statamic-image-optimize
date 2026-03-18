@@ -12,50 +12,51 @@ use PHPUnit\Framework\Attributes\Test;
 class ImageResizeControllerTest extends TestCase
 {
     #[Test]
-    public function it_can_resize_images(): void
+    public function it_can_start_a_batch_for_remaining_images(): void
     {
         $fakeBatch = new BatchFake('::batch-id::', '::name::', 0, 0, 0, [], [], now()->toImmutable());
 
         $this->mock(ResizesImages::class, function (MockInterface $mock) use ($fakeBatch): void {
             $mock
                 ->shouldReceive('resize')
+                ->with(false)
                 ->andReturn($fakeBatch);
         });
 
         $this
             ->withoutMiddleware()
-            ->get(route('statamic.cp.statamic-image-optimize.resize-images'))
+            ->post(route('statamic.cp.statamic-image-optimize.batches.start'), ['scope' => 'remaining'])
             ->assertSuccessful()
             ->assertJson([
-                'imagesOptimized' => true,
                 'batchId' => '::batch-id::',
             ]);
     }
 
     #[Test]
-    public function it_can_get_resize_images_count(): void
+    public function it_can_start_a_batch_for_all_images(): void
     {
-        Bus::fake();
+        $fakeBatch = new BatchFake('::batch-id::', '::name::', 0, 0, 0, [], [], now()->toImmutable());
 
-        $this->createAsset();
+        $this->mock(ResizesImages::class, function (MockInterface $mock) use ($fakeBatch): void {
+            $mock
+                ->shouldReceive('resize')
+                ->with(true)
+                ->andReturn($fakeBatch);
+        });
 
         $this
             ->withoutMiddleware()
-            ->get(route('statamic.cp.statamic-image-optimize.resize-images-count'))
+            ->post(route('statamic.cp.statamic-image-optimize.batches.start'), ['scope' => 'all'])
             ->assertSuccessful()
             ->assertJson([
-                'assetsToOptimize' => 1,
-                'assetTotal' => 1,
+                'batchId' => '::batch-id::',
             ]);
     }
 
     #[Test]
-    public function it_can_get_resize_images_count_with_batch(): void
+    public function it_can_get_batch_status(): void
     {
-        Bus::fake();
-
-        $this->createAsset();
-        $fakeBatch = new BatchFake('::batch-id::', '::name::', 1, 0, 0, [], [], now()->toImmutable());
+        $fakeBatch = new BatchFake('::batch-id::', '::name::', 2, 1, 1, [], [], now()->toImmutable());
 
         Bus::spy()
             ->shouldReceive('findBatch')
@@ -63,11 +64,31 @@ class ImageResizeControllerTest extends TestCase
 
         $this
             ->withoutMiddleware()
-            ->get(route('statamic.cp.statamic-image-optimize.resize-images-count', ['batchId' => '::batch-id::']))
+            ->get(route('statamic.cp.statamic-image-optimize.batches.status', ['batchId' => '::batch-id::']))
             ->assertSuccessful()
             ->assertJson([
-                'assetsToOptimize' => 0,
-                'assetTotal' => 1,
+                'batchId' => '::batch-id::',
+                'total' => 2,
+                'pending' => 1,
+                'failed' => 1,
+                'processed' => 0,
+            ]);
+    }
+
+    #[Test]
+    public function it_returns_404_when_batch_is_missing(): void
+    {
+        Bus::spy()
+            ->shouldReceive('findBatch')
+            ->andReturn(null);
+
+        $this
+            ->withoutMiddleware()
+            ->get(route('statamic.cp.statamic-image-optimize.batches.status', ['batchId' => '::missing::']))
+            ->assertNotFound()
+            ->assertJson([
+                'batchId' => '::missing::',
+                'missing' => true,
             ]);
     }
 }

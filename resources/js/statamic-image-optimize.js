@@ -1,5 +1,5 @@
-import ResizeForm from './components/cp/image-resize/ResizeForm';
+import ImageResizeIndex from './Pages/ImageResize/Index.vue';
 
 Statamic.booting(() => {
-    Statamic.component('justbetter-statamic-optimize-image-form', ResizeForm);
+    Statamic.$inertia.register('statamic-image-optimize::ImageResize/Index', ImageResizeIndex);
 });

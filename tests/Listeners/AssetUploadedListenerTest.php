@@ -18,7 +18,7 @@ class AssetUploadedListenerTest extends TestCase
 
         $asset = $this->createAsset();
 
-        $event = new AssetUploaded($asset);
+        $event = new AssetUploaded($asset, 'test.png');
 
         /** @var AssetUploadedListener $listener */
         $listener = app(AssetUploadedListener::class);

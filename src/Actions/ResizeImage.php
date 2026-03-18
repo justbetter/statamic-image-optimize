@@ -2,11 +2,11 @@
 
 namespace JustBetter\ImageOptimize\Actions;
 
-use Intervention\Image\Exception\NotReadableException;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Exceptions\DriverException;
+use Intervention\Image\Exceptions\RuntimeException;
+use Intervention\Image\ImageManager;
 use JustBetter\ImageOptimize\Contracts\ResizesImage;
 use JustBetter\ImageOptimize\Events\ImageResizedEvent;
-use League\Glide\Manipulators\Size;
 use Statamic\Assets\Asset;
 
 class ResizeImage implements ResizesImage
@@ -23,19 +23,24 @@ class ResizeImage implements ResizesImage
         $width ??= (int) config('image-optimize.default_resize_width');
         $height ??= (int) config('image-optimize.default_resize_height');
 
-        // Prevents exceptions occurring when resizing non-compatible filetypes like SVG.
         try {
-            $orientedImage = Image::make($asset->resolvedPath())->orientate();
+            $manager = ImageManager::gd();
 
-            $image = (new Size)->runMaxResize($orientedImage, $width, $height);
+            $image = $manager->read($asset->resolvedPath())
+                ->scaleDown($width, $height);
 
-            $asset->disk()->filesystem()->put($asset->path(), $image->encode());
+            $extension = $asset->extension();
+
+            $asset->disk()->filesystem()->put(
+                $asset->path(),
+                $image->encodeByExtension($extension)
+            );
 
             $asset->merge(['image-optimized' => '1']);
 
             $asset->save();
             $asset->meta();
-        } catch (NotReadableException) {
+        } catch (RuntimeException|DriverException) {
             return;
         }
 

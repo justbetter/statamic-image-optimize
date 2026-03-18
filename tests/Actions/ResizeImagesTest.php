@@ -11,6 +11,8 @@ use JustBetter\ImageOptimize\Events\ImagesResizedEvent;
 use JustBetter\ImageOptimize\Tests\TestCase;
 use Orchestra\Testbench\Attributes\WithMigration;
 use PHPUnit\Framework\Attributes\Test;
+use Statamic\Assets\AssetCollection;
+use Statamic\Facades\Asset;
 
 class ResizeImagesTest extends TestCase
 {
@@ -19,7 +21,10 @@ class ResizeImagesTest extends TestCase
     {
         Bus::fake();
 
-        $this->createAsset();
+        $asset = $this->createAsset();
+
+        Asset::shouldReceive('all')
+            ->andReturn(new AssetCollection([$asset]));
 
         /** @var ResizeImages $action */
         $action = app(ResizeImages::class);
