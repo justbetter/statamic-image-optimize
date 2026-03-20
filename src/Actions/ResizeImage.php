@@ -24,7 +24,12 @@ class ResizeImage implements ResizesImage
         $maxHeight = (int) config('image-optimize.max_resize_height');
 
         try {
-            $manager = ImageManager::gd();
+            $driver = config('statamic.assets.image_manipulation.driver', 'gd');
+
+            $manager = match ($driver) {
+                'imagick' => ImageManager::imagick(),
+                default => ImageManager::gd(),
+            };
 
             $image = $manager->read($asset->resolvedPath());
 
