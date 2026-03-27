@@ -1,6 +1,12 @@
 # Changelog 
 
-[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/4.0.0...main)
+[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/5.0.0...main)
+## [5.0.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/5.0.0) - 2026-03-27
+
+### Added
+
+- Statamic 6 update (#36)
+
 ## [4.0.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/4.0.0) - 2025-05-20
 
 ### Added
