@@ -2,21 +2,22 @@
 
 namespace JustBetter\ImageOptimize\Http\Controllers\CP;
 
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
 use Statamic\Facades\Asset;
+use Throwable;
 
 class ImageResizeController extends Controller
 {
     /**
      * @codeCoverageIgnore
      */
-    public function index(): Factory|View|string
+    public function index(): Response
     {
         $assets = Asset::all()->getOptimizableAssets(); // @phpstan-ignore-line
         $unoptimizedAssets = $assets->whereNull('image-optimized');
@@ -24,46 +25,52 @@ class ImageResizeController extends Controller
 
         try {
             DB::connection()->getPdo();
-        } catch (\Exception $e) {
+        } catch (Throwable) {
             $databaseConnected = false;
         }
 
-        return view('statamic-image-optimize::cp.image-resize.index', [
-            'title' => 'JustBetter Image Optimize',
-            'total_assets' => $assets->count(),
-            'unoptimized_assets' => $unoptimizedAssets->count(),
-            'can_optimize' => $databaseConnected,
+        return Inertia::render('statamic-image-optimize::ImageResize/Index', [
+            'totalAssets' => $assets->count(),
+            'unoptimizedAssets' => $unoptimizedAssets->count(),
+            'canOptimize' => $databaseConnected,
+            'startBatchUrl' => cp_route('statamic-image-optimize.batches.start'),
+            'batchStatusUrlTemplate' => cp_route('statamic-image-optimize.batches.status', ['batchId' => '__BATCH_ID__']),
         ]);
     }
 
-    public function resizeImages(ResizesImages $resizesImages, ?string $forceAll = null): JsonResponse
+    public function startBatch(ResizesImages $resizesImages): JsonResponse
     {
-        $batch = $resizesImages->resize($forceAll !== null);
+        $validated = request()->validate([
+            'scope' => ['required', 'string', 'in:remaining,all'],
+        ]);
+
+        $batch = $resizesImages->resize($validated['scope'] === 'all');
 
         return response()->json([
-            'imagesOptimized' => true,
             'batchId' => $batch->id,
         ]);
     }
 
-    public function resizeImagesJobCount(?string $batchId = null): JsonResponse
+    public function batchStatus(string $batchId): JsonResponse
     {
-        $batch = $batchId ? Bus::findBatch($batchId) : null;
+        $batch = Bus::findBatch($batchId);
 
         if ($batch) {
+            $processedJobs = max(0, $batch->totalJobs - $batch->pendingJobs - $batch->failedJobs);
+
             return response()->json([
-                'assetsToOptimize' => $batch->pendingJobs,
-                'assetTotal' => $batch->totalJobs,
+                'batchId' => $batch->id,
+                'total' => $batch->totalJobs,
+                'pending' => $batch->pendingJobs,
+                'failed' => $batch->failedJobs,
+                'processed' => $processedJobs,
+                'finished' => $batch->finished(),
             ]);
         }
 
-        $allAssets = Asset::all();
-        $assets = $allAssets->getOptimizableAssets() // @phpstan-ignore-line
-            ->whereNull('image-optimized');
-
         return response()->json([
-            'assetsToOptimize' => $assets->count(),
-            'assetTotal' => $allAssets->count(),
-        ]);
+            'batchId' => $batchId,
+            'missing' => true,
+        ], 404);
     }
 }

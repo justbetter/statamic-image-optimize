@@ -8,6 +8,7 @@ Route::prefix('statamic-image-optimize')
     ->controller(ImageResizeController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/resize-images/{forceAll?}', 'resizeImages')->name('resize-images');
-        Route::get('/resize-images-count/{batchId?}', 'resizeImagesJobCount')->name('resize-images-count');
+
+        Route::post('/batches', 'startBatch')->name('batches.start');
+        Route::get('/batches/{batchId}', 'batchStatus')->name('batches.status');
     });

@@ -3,12 +3,12 @@
 namespace JustBetter\ImageOptimize\Tests\Actions;
 
 use Illuminate\Support\Facades\Event;
-use Intervention\Image\Exception\NotReadableException;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use JustBetter\ImageOptimize\Actions\ResizeImage;
 use JustBetter\ImageOptimize\Events\ImageResizedEvent;
 use JustBetter\ImageOptimize\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Statamic\Assets\Asset;
 
 class ResizeImageTest extends TestCase
 {
@@ -53,11 +53,29 @@ class ResizeImageTest extends TestCase
     {
         Event::fake();
 
-        Image::spy()
-            ->shouldReceive('make')
-            ->andThrow(NotReadableException::class);
+        Storage::disk('assets')->put('broken.png', 'this-is-not-a-valid-image');
 
-        $asset = $this->createAsset();
+        $asset = new Asset;
+        $asset->container($this->assetContainer());
+        $asset->path('broken.png');
+        $asset->save();
+
+        /** @var ResizeImage $action */
+        $action = app(ResizeImage::class);
+        $action->resize($asset);
+
+        Event::assertNotDispatched(ImageResizedEvent::class);
+    }
+
+    #[Test]
+    public function it_can_skip_missing_assets(): void
+    {
+        Event::fake();
+
+        $asset = new Asset;
+        $asset->container($this->assetContainer());
+        $asset->path('does-not-exist.png');
+        $asset->save();
 
         /** @var ResizeImage $action */
         $action = app(ResizeImage::class);

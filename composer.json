@@ -15,19 +15,20 @@
         }
     ],
     "require": {
-        "php": "^8.2|^8.3",
+        "php": "^8.4|^8.5",
         "ext-fileinfo": "*",
-        "statamic/cms": "^5.0",
-        "laravel/framework": "^11.0 || ^12.0",
-        "league/glide": "^2.3"
+        "intervention/image": "^3.0",
+        "statamic/cms": "^6.0",
+        "laravel/framework": "^12.0",
+        "league/glide": "^3.0"
     },
     "require-dev": {
         "laravel/pint": "^1.7",
-        "larastan/larastan": "^2.5",
-        "phpstan/phpstan-mockery": "^1.1",
-        "phpunit/phpunit": "^10.1 || ^11.5",
-        "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "pestphp/pest": "^2.0"
+        "larastan/larastan": "^3.4",
+        "phpstan/phpstan-mockery": "^2.0",
+        "phpunit/phpunit": "^11.5",
+        "orchestra/testbench": "^10.3",
+        "pestphp/pest": "^3.7"
     },
     "autoload": {
         "psr-4": {
@@ -41,8 +42,9 @@
     },
     "scripts": {
         "test": "phpunit",
-        "analyse": "phpstan",
+        "analyse": "phpstan --memory-limit=1G",
         "style": "pint --test",
+        "coverage": "XDEBUG_MODE=coverage php vendor/bin/pest --coverage --min=100",
         "quality": [
             "@test",
             "@analyse",

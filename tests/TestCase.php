@@ -5,7 +5,6 @@ namespace JustBetter\ImageOptimize\Tests;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageServiceProvider;
 use JustBetter\ImageOptimize\ServiceProvider;
 use Statamic\Assets\Asset;
 use Statamic\Assets\AssetContainer;
@@ -20,13 +19,11 @@ abstract class TestCase extends AddonTestCase
 
     protected string $addonServiceProvider = ServiceProvider::class;
 
-    protected ?AssetContainer $assetContainer = null;
+    protected AssetContainer $assetContainer;
 
     protected function getPackageProviders($app)
     {
-        return array_merge(parent::getPackageProviders($app), [
-            ImageServiceProvider::class,
-        ]);
+        return parent::getPackageProviders($app);
     }
 
     protected function defineEnvironment($app): void
@@ -52,11 +49,13 @@ abstract class TestCase extends AddonTestCase
 
     protected function assetContainer(): AssetContainer
     {
-        if ($this->assetContainer === null) {
-            $this->assetContainer = (new AssetContainer) // @phpstan-ignore-line
-                ->handle('test_container')
-                ->disk('assets')
-                ->save();
+        if (! isset($this->assetContainer)) {
+            $container = new AssetContainer;
+            $container->handle('test_container');
+            $container->disk('assets');
+            $container->save();
+
+            $this->assetContainer = $container;
         }
 
         return $this->assetContainer;
@@ -75,11 +74,18 @@ abstract class TestCase extends AddonTestCase
 
     protected function createAsset(string $filename = 'test.png'): Asset
     {
-        Storage::disk('assets')->put($filename, file_get_contents($this->fixturePath('uploads/test.png'))); // @phpstan-ignore-line
+        $contents = file_get_contents($this->fixturePath('uploads/test.png'));
+        if ($contents === false) {
+            throw new \RuntimeException('Unable to read test fixture image.');
+        }
 
-        /** @var Asset $asset */
-        $asset = (new Asset)->container($this->assetContainer())->path($filename); // @phpstan-ignore-line
+        Storage::disk('assets')->put($filename, $contents);
+
+        $asset = new Asset;
+        $asset->container($this->assetContainer());
+        $asset->path($filename);
         $asset->save();
+        $asset->meta();
 
         return $asset;
     }

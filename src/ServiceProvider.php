@@ -65,8 +65,6 @@ class ServiceProvider extends AddonServiceProvider
     {
         parent::boot();
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'statamic-image-optimize');
-
         $this->bootPublishables()
             ->bootEvents()
             ->bootCommands()
@@ -108,7 +106,7 @@ class ServiceProvider extends AddonServiceProvider
             $nav->create('Image Optimize')
                 ->section('Tools')
                 ->route('statamic-image-optimize.index')
-                ->icon('collection');
+                ->icon('insert-image');
         });
 
         return $this;
