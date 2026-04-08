@@ -20,8 +20,6 @@ class ResizeImageJob implements ShouldBeUnique, ShouldQueue
 
     public function __construct(
         public Asset $asset,
-        public ?int $width = null,
-        public ?int $height = null,
     ) {
         $this->onConnection(config('image-optimize.default_queue_connection'));
         $this->onQueue(config('image-optimize.default_queue_name'));
@@ -29,7 +27,7 @@ class ResizeImageJob implements ShouldBeUnique, ShouldQueue
 
     public function handle(ResizesImage $contract): void
     {
-        $contract->resize($this->asset, $this->width, $this->height);
+        $contract->resize($this->asset);
     }
 
     public function uniqueId(): string
