@@ -1,6 +1,12 @@
 # Changelog 
 
-[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/5.0.0...main)
+[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/5.1.0...main)
+## [5.1.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/5.1.0) - 2026-04-08
+
+### Added
+
+- Refactored image resizing based on ratio (#37)
+
 ## [5.0.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/5.0.0) - 2026-03-27
 
 ### Added
