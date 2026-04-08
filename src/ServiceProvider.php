@@ -65,8 +65,6 @@ class ServiceProvider extends AddonServiceProvider
     {
         parent::boot();
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'statamic-image-optimize');
-
         $this->bootPublishables()
             ->bootEvents()
             ->bootCommands()

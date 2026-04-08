@@ -123,6 +123,10 @@ class ResizeImageTest extends TestCase
         $asset->container($this->assetContainer());
         $asset->path('does-not-exist.png');
         $asset->save();
+        $asset = new Asset;
+        $asset->container($this->assetContainer());
+        $asset->path('does-not-exist.png');
+        $asset->save();
 
         /** @var ResizeImage $action */
         $action = app(ResizeImage::class);
