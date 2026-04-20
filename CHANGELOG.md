@@ -1,6 +1,14 @@
 # Changelog 
 
-[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/5.1.0...main)
+[Unreleased changes](https://github.com/justbetter/statamic-image-optimize/compare/5.2.0...main)
+## [5.2.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/5.2.0) - 2026-04-20
+
+### Added
+- Laravel 13 compatibility (#38)
+
+
+**Full Changelog**: https://github.com/justbetter/statamic-image-optimize/compare/5.1.0...5.2.0
+
 ## [5.1.0](https://github.com/justbetter/statamic-image-optimize/releases/tag/5.1.0) - 2026-04-08
 
 ### Added
