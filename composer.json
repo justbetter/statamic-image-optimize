@@ -19,7 +19,7 @@
         "ext-fileinfo": "*",
         "intervention/image": "^3.0",
         "statamic/cms": "^6.0",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^12.0 | ^13.0",
         "league/glide": "^3.0"
     },
     "require-dev": {
@@ -27,7 +27,7 @@
         "larastan/larastan": "^3.4",
         "phpstan/phpstan-mockery": "^2.0",
         "phpunit/phpunit": "^11.5",
-        "orchestra/testbench": "^10.3",
+        "orchestra/testbench": "^10.11|^11.0",
         "pestphp/pest": "^3.7"
     },
     "autoload": {
