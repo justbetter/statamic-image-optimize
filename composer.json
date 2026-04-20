@@ -19,7 +19,7 @@
         "ext-fileinfo": "*",
         "intervention/image": "^3.0",
         "statamic/cms": "^6.0",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^12.0 | ^13.0",
         "league/glide": "^3.0"
     },
     "require-dev": {
