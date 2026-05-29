@@ -68,8 +68,12 @@ class ServiceProvider extends AddonServiceProvider
         $this->bootPublishables()
             ->bootEvents()
             ->bootCommands()
-            ->bootNav()
             ->handleTranslations();
+    }
+
+    public function bootAddon(): void
+    {
+        $this->bootNav();
     }
 
     public function bootEvents(): static
@@ -103,10 +107,19 @@ class ServiceProvider extends AddonServiceProvider
     protected function bootNav(): static
     {
         Nav::extend(function (Navigation $nav): void {
-            $nav->create('Image Optimize')
-                ->section('Tools')
+            $justBetter = $nav->find('Tools', 'JustBetter');
+
+            if (! $justBetter) {
+                return;
+            }
+
+            $imageOptimize = $nav->item('Image Optimize')
                 ->route('statamic-image-optimize.index')
                 ->icon('insert-image');
+
+            $children = $justBetter->resolveChildren()->children() ?? collect();
+
+            $justBetter->children($children->push($imageOptimize)->all());
         });
 
         return $this;
