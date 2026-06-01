@@ -41,6 +41,11 @@ class ResizeImagesCommand extends Command
 
             while ($batch->pendingJobs && ! $batch->finished() && ! $batch->cancelled()) {
                 $batch = $batch->fresh();
+
+                if ($batch === null) {
+                    break;
+                }
+
                 $progress->setProgress($batch->processedJobs());
             }
 
