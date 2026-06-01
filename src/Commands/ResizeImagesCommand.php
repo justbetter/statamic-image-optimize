@@ -2,6 +2,7 @@
 
 namespace JustBetter\ImageOptimize\Commands;
 
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use JustBetter\ImageOptimize\Contracts\ResizesImages;
@@ -40,12 +41,13 @@ class ResizeImagesCommand extends Command
             $progress->start();
 
             while ($batch->pendingJobs && ! $batch->finished() && ! $batch->cancelled()) {
-                $batch = $batch->fresh();
+                $refreshed = $batch->fresh();
 
-                if ($batch === null) {
+                if (! $refreshed instanceof Batch) {
                     break;
                 }
 
+                $batch = $refreshed;
                 $progress->setProgress($batch->processedJobs());
             }
 
