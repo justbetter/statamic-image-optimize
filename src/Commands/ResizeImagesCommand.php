@@ -41,9 +41,9 @@ class ResizeImagesCommand extends Command
             $progress->start();
 
             while ($batch->pendingJobs && ! $batch->finished() && ! $batch->cancelled()) {
-                $refreshed = $batch->fresh();
+                $refreshed = $this->freshBatch($batch);
 
-                if (! $refreshed instanceof Batch) {
+                if ($refreshed === null) {
                     break;
                 }
 
@@ -61,5 +61,10 @@ class ResizeImagesCommand extends Command
         }
 
         return static::SUCCESS;
+    }
+
+    private function freshBatch(Batch $batch): ?Batch
+    {
+        return $batch->fresh();
     }
 }
